@@ -1,12 +1,16 @@
 <script>
     Vue.use(VueMaterial.default)
+
     let app = {
-        name: "CRS Programme",
+        name: "CSR Programme",
         session: "form",
+        hasError: false,
+        error: null,
     }
+
     let form = {
-        title: "CRS Programme",
-        subTitle: "This is a sub title",
+        title: "CSR Programme",
+        subTitle: "Required *",
         valid: false,
         submitting: false,
         confirmation: null,
@@ -35,6 +39,7 @@
         ],
 
     }
+
     let data = {
         app,
         form,
@@ -87,16 +92,18 @@
             })
             .withFailureHandler(error=>{
                 this.form.submitting = false
-                alert(error.message)
+                this.app.hasError = true
+                this.app.error = error.message
             })
             .saveDataToSheet(data)
     }
+    
     let methods = {
         validate,
         submit,
     }
 
-    let App = new Vue({
+    new Vue({
         el: "#app",
         data,
         methods,
