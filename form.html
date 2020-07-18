@@ -16,6 +16,7 @@
                 <md-input 
                     v-model.trim="item.value"
                     :required="item.required"
+                    :disabled="form.submitting"
                     @blur="validate(item)"
                     @keyup="validate(item)">
                 </md-input>

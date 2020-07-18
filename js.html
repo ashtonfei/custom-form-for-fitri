@@ -66,7 +66,7 @@
     }
 
     let submit = function(){
-        app.submitting = true
+        this.form.submitting = true
         let headers = ["Timestamp"]
         let values = [new Date()]
         let sheetname = "Responses"
