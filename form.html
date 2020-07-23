@@ -8,27 +8,82 @@
             <div class="md-subhead">
                 {{form.subTitle}}
             </div>
-            <md-field
-                :class="item.valid === false ? 'md-invalid' : '' "
-                v-for="(item, i) in form.items"
-                :key="'item-' + i">
-                <label>{{item.label}}</label>
-                <md-input 
-                    v-model.trim="item.value"
-                    :required="item.required"
-                    :disabled="form.submitting"
-                    @blur="validate(item)"
-                    @keyup="validate(item)">
-                </md-input>
-                <span class="md-error">{{item.error}}</span>
-            </md-field>
+            <template v-if="new Date() < form.start">
+                <div class="md-subhead">The registration is not availabel before {{form.start.toLocaleString()}}.</div>
+            </template>
+            <template v-else-if="new Date() > form.end">
+                <div class="md-subhead">The registration is not avaiable after {{form.end.toLocaleString()}}.</div>
+            </template>
+            <template v-else>
+                <div class="md-subhead">The registration form is only available from {{form.start.toLocaleString()}} to  {{form.end.toLocaleString()}}.</div>
+                <br>
+                <template v-for="(item, i) in form.items">
+                    <md-field
+                        v-if="item.type === 'input'"
+                        :class="item.valid === false ? 'md-invalid' : '' "
+                        :key="'item-' + i">
+                        <label>{{item.label}}</label>
+                        <md-input 
+                            v-model.trim="item.value"
+                            :required="item.required"
+                            :disabled="form.submitting"
+                            @blur="validate(item)"
+                            @keyup="validate(item)">
+                        </md-input>
+                        <span class="md-error">{{item.error}}</span>
+                    </md-field>
+                    
+                    <md-field
+                        v-if="item.type === 'select'"
+                        :class="item.valid === false ? 'md-invalid' : '' "
+                        :key="'item-' + i">
+                      <label>{{item.label}}</label>
+                      <md-select 
+                          v-model="item.value"
+                          :required="item.required"
+                          :disabled="form.submitting"
+                          @blur="validate(item)"
+                          @change="validate(item)"
+                          md-dense>
+                        <md-option 
+                            v-for="(option, i) in item.options"
+                            :value="option"
+                            :key="option + item.label">{{option}}</md-option>
+                      </md-select>
+                      <span class="md-error">{{item.error}}</span>
+                    </md-field>
+                    
+                    <md-field
+                        v-if="item.type === 'multiple-select'"
+                        :class="item.valid === false ? 'md-invalid' : '' "
+                        :key="'item-' + i">
+                      <label>{{item.label}}</label>
+                      <md-select 
+                          v-model="item.value"
+                          :required="item.required"
+                          :disabled="form.submitting"
+                          @blur="validate(item)"
+                          @change="validate(item)"
+                          md-dense
+                          multiple>
+                        <md-option 
+                            v-for="(option, i) in item.options"
+                            :value="option"
+                            :key="option + item.label">{{option}}</md-option>
+                      </md-select>
+                      <span class="md-error">{{item.error}}</span>
+                    </md-field>
+                </template>
+                <div>
+                    <md-button 
+                        class="md-primary md-raised submit-button"
+                        :disabled=" !form.valid || form.submitting"
+                        @click="submit">Submit</md-button>
+                </div>
+            </template>
+            
         </div>
-        <div class="md-card-actions" md-alignment="left">
-            <md-button 
-                class="md-primary"
-                :disabled=" !form.valid || form.submitting"
-                @click="submit">Submit</md-button>
-        </div>
+        
     </div>
     <div class="md-layout-item md-size-25 md-small-hidden"></div>
 </div>

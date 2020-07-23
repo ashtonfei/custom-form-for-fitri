@@ -1,6 +1,7 @@
 const uid_key = "uid"   // uid key for generating the sequential registration number
 const uid_prefix = ""   // uid prefix
 const uid_length = 4    // uid digit length
+const _max_responses = 1500 // max reseponses allowed
 
 function onOpen(e){
     let ui = SpreadsheetApp.getUi()
@@ -52,16 +53,22 @@ function getSheetByName(sheetname){
  */
 function saveDataToSheet(data){
     let uid = createUid()
-    let {sheetname, values, headers} = JSON.parse(data)
+    if (Number(uid) > _max_responses){
+        return `Sorry, your response reached the limit of ${_max_responses}.`
+    }else{
+        let {sheetname, values, headers} = JSON.parse(data)
+        values = [new Date()].concat(values)
+        headers = ["Timestamp"].concat(headers)
+        
+        let ws = getSheetByName(sheetname)
+        headers.push("Registration number")
+        values.push("'" + uid)
+        
+        ws.getRange(1, 1, 1, headers.length).setValues([headers])
+        ws.appendRow(values)
+        return uid
+    }
     
-    let ws = getSheetByName(sheetname)
-    headers.push("Registration number")
-    values.push("'" + uid)
-    
-    ws.getRange(1, 1, 1, headers.length).setValues([headers])
-    ws.appendRow(values)
-    
-    return uid
 }
 
 

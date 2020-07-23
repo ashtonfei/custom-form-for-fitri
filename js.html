@@ -9,32 +9,76 @@
     }
 
     let form = {
-        title: "CSR Programme",
-        subTitle: "Required *",
+        title: "Pendaftaran Solat Aidiladha & Solat Jumaat 31 Jul 2020",
+        subTitle: "Masjid Jamek Tan Sri Ainuddin Wahid Taman Universiti Skudai Johor",
         valid: false,
         submitting: false,
         confirmation: null,
+        start: new Date(2020, 6, 22, 6), // 2020, 6, 27, 6
+        end: new Date(2020, 6, 31, 9),
         items: [
             {
-                label: "Name",
+                type: "multiple-select",
+                label: "Solat (Pilih kedua-dua atau salah satu)",
                 value: null,
                 required: true,
                 valid: null,
-                error: "Name can't be empty",
+                error: "This is a required question",
+                options: ["Solat Aidiladha (Untuk Lelaki & Perempuan)","Solat Jumaat 31 Jul 2020 (Lelaki Sahaja)"],
             },
             {
-                label: "Address",
+                type: "input",
+                label: "Nama Penuh (seperti dalam KP)",
                 value: null,
                 required: true,
                 valid: null,
-                error: "Address can't be empty",
+                error: "This is a required question",
+                options: null,
             },
             {
-                label: "Mobile Phone No.",
+                type: "input",
+                label: "Alamat Rumah (tulis ringkas, contoh: 31 Kebangsaan 33, TU)",
                 value: null,
-                required: false,
-                valid: true,
-                error: "Mobile phone number is invalid",
+                required: true,
+                valid: null,
+                error: "This is a required question",
+                options: null,
+            },
+            {
+                type: "input",
+                label: "No Kad Pengenalan",
+                value: null,
+                required: true,
+                valid: null,
+                error: "This is a required question",
+                options: null,
+            },
+            {
+                type: "input",
+                label: "No Telefon Bimbit",
+                value: null,
+                required: true,
+                valid: null,
+                error: "This is a required question",
+                options: null,
+            },
+            {
+                type: "select",
+                label: "Umur (Tahun)",
+                value: null,
+                required: true,
+                valid: null,
+                error: "This is a required question",
+                options: ["15 - 30", "31 - 40", "41 - 50", "51 - 60", "61 - 70", "> 71 (disahkan SIHAT)"],
+            },
+            {
+                type: "select",
+                label: "Jantina",
+                value: null,
+                required: true,
+                valid: null,
+                error: "This is a required question",
+                options: ["Lelaki", "Perempuan"],
             }
         ],
 
@@ -44,14 +88,38 @@
         app,
         form,
     }
+    
+    let createConfirmationMessage = function(name, number){
+        let html = `
+        <div class="md-title">Pendaftaran Solat Aidiladha & Solat Jumaat 31 Jul 2020<\/div>
+        <p>Pendaftaran Saudara ${name} Telah Berjaya<br>
+        Nombor Pendaftaran ialah ${number}<\/p>
+        <p>Solat Aidiladha akan diadakan pada pukul 8.30 pagi. Mohon datang awal (7.00 - 7.45 pagi) untuk pendaftaran masuk. Pintu pagar akan ditutup tepat 8.00 pagi.<br>
+        Solat Jumaat. Pendaftaran masuk pada pukul 12 - 1.00 ptg. Mohon kerjasama untuk datang awal.<\/p>
+        <p>Sila pastikan<br>
+        Bawa sejadah, Pakai face mask dan wuduk dari rumah<\/p>
+        <p>Senarai nama akan dipaparkan di FB masjid pada hari Rabu (SET A) dan Khamis 10 malam (SET B)<\/p>
+        <p>TERIMA KASIH<br>
+        #KITA JAGA KITA<\/p>`
+        return html
+    }
 
     let validate = function(item){
         // validate the input filed
         if (item.required){
+            
             if (item.value === "" || item.value === null){
                 item.valid = false
             }else{
-                item.valid = true
+                if (typeof(item.value) === "object"){
+                    if (item.value.length === 0){
+                        item.valid = false
+                    }else{
+                        item.valid = true
+                    }
+                }else{
+                    item.valid = true
+                }
             }
         }
         // validate the form
@@ -67,28 +135,38 @@
 
     let submit = function(){
         this.form.submitting = true
-        let headers = ["Timestamp"]
-        let values = [new Date()]
+        let headers = []
+        let values = []
         let sheetname = "Responses"
         this.form.items.forEach(item => {
             headers.push(item.label)
-            values.push(item.value)
+            if (typeof(item.value) === 'object'){
+                values.push(item.value.join(", "))
+            }else{
+                values.push(item.value)
+            }
         })
         let data = {headers, values, sheetname}
         data = JSON.stringify(data)
         google.script.run
             .withSuccessHandler(number=>{
-                this.form.confirmation = `<p>Thanks for your registration, ${this.form.items[0].value}. 
-                Your registration number is <b>${number}<\/b>.<\/p>`
-                // reset the form
-                this.form.submitting = false
-                this.form.valid = false
-                this.form.items.forEach(item => {
-                    item.value = null
-                    item.valid = null
-                })
-                // got to session confirmation
-                this.app.session = "confirmation"
+                if (Number(number)){
+                    this.form.submitting = false
+                    this.form.confirmation = this.createConfirmationMessage(this.form.items[1].value, number)
+                    // reset the form
+                    this.form.valid = false
+                    this.form.items.forEach(item => {
+                        item.value = null
+                        item.valid = null
+                    })
+                    // got to session confirmation
+                    this.app.session = "confirmation"
+                }else{
+                    this.form.submitting = false
+                    this.app.hasError = true
+                    this.app.error = number
+                }
+                
             })
             .withFailureHandler(error=>{
                 this.form.submitting = false
@@ -101,6 +179,7 @@
     let methods = {
         validate,
         submit,
+        createConfirmationMessage,
     }
 
     new Vue({
