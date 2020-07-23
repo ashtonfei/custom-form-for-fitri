@@ -29,7 +29,7 @@ function doGet(e){
     let htmlOuput = template.evaluate()
     htmlOuput
       .addMetaTag("viewport", "width=device-width,initial-scale=1,minimal-ui")
-      .setTitle("CSR Programme")
+      .setTitle("Pendaftaran Solat Aidiladha & Solat Jumaat 31 Jul 2020")
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
     return htmlOuput   
 }

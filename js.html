@@ -14,8 +14,8 @@
         valid: false,
         submitting: false,
         confirmation: null,
-        start: new Date(2020, 6, 22, 6), // 2020, 6, 27, 6
-        end: new Date(2020, 6, 31, 9),
+        start: new Date(2020, 6, 22, 6), // 27 Jul 2020, 6 am
+        end: new Date(2020, 6, 31, 13), // 31 Jul 2020, 1.00 pm
         items: [
             {
                 type: "multiple-select",
@@ -91,16 +91,20 @@
     
     let createConfirmationMessage = function(name, number){
         let html = `
-        <div class="md-title">Pendaftaran Solat Aidiladha & Solat Jumaat 31 Jul 2020<\/div>
-        <p>Pendaftaran Saudara ${name} Telah Berjaya<br>
-        Nombor Pendaftaran ialah ${number}<\/p>
-        <p>Solat Aidiladha akan diadakan pada pukul 8.30 pagi. Mohon datang awal (7.00 - 7.45 pagi) untuk pendaftaran masuk. Pintu pagar akan ditutup tepat 8.00 pagi.<br>
-        Solat Jumaat. Pendaftaran masuk pada pukul 12 - 1.00 ptg. Mohon kerjasama untuk datang awal.<\/p>
-        <p>Sila pastikan<br>
-        Bawa sejadah, Pakai face mask dan wuduk dari rumah<\/p>
-        <p>Senarai nama akan dipaparkan di FB masjid pada hari Rabu (SET A) dan Khamis 10 malam (SET B)<\/p>
-        <p>TERIMA KASIH<br>
-        #KITA JAGA KITA<\/p>`
+            <div class="md-title">Pendaftaran Solat Aidiladha & Solat Jumaat 31 Jul 2020<\/div>
+            <p>Pendaftaran Saudara ${name} Telah Berjaya<br>
+            Nombor Pendaftaran saudara ialah ${number}. SILA INGAT PENDAFTARAN SAUDARA SEMASA PENDAFTARAN MASUK MASJID.<\/p>
+            
+            <p>Solat Aidiladha akan diadakan pada pukul 8.30 pagi. Mohon kerjasama datang awal (7.00 - 7.45 pagi) untuk pendaftaran masuk. Pintu pagar akan ditutup tepat 8.00 pagi.<br>
+            Solat Jumaat. Pendaftaran masuk pada pukul 12 - 1.00 ptg. Mohon kerjasama untuk datang awal.<\/p>
+            
+            <p>SILA PASTIKAN<br>
+            BAWA SEJADAH, MEMAKAI FACE MASK, DAN MENGAMBIL WUDUK DARI RUMAH.<\/p>
+            
+            <p>Senarai nama akan dipaparkan di FB masjid pada hari Khamis 10 malam (Solat Aidiladha) dan  Jumaat 10 pagi (Solat Jumaat)<\/p>
+            
+            <p>TERIMA KASIH<br>
+            #KITA JAGA KITA<\/p>`
         return html
     }
 
