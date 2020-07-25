@@ -53,6 +53,24 @@
                 error: "This is a required question",
                 options: [],
             },
+            {
+                type: "input",
+                label: "Name",
+                value: null,
+                required: true,
+                valid: null,
+                error: "This is a required question",
+                options: [],
+            },
+            {
+                type: "input",
+                label: "Email",
+                value: null,
+                required: true,
+                valid: null,
+                error: "This is a required question",
+                options: [],
+            },
         ],
     }
 
@@ -67,10 +85,21 @@
         return html
     }
 
-    let validate = function(item){
+    let validate = function(item, specialCheck = false){
+        if (specialCheck){
+            if (item.type === "region"){
+                this.form.items[1].value = null
+                this.form.items[2].value = null
+                this.form.items[3].value = null
+            } else if (item.type === "province") {
+                this.form.items[2].value = null
+                this.form.items[3].value = null
+            } else if (item.type === "city") {
+                this.form.items[3].value = null
+            }
+        }
         // validate the input filed
         if (item.required){
-            
             if (item.value === "" || item.value === null){
                 item.valid = false
             }else{

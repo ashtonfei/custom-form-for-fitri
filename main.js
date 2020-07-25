@@ -139,7 +139,7 @@ function getAppData(){
             rObject[rKey] = {name: region, id: rKey}
             pObject[pKey] = {name: province, id: pKey, parent: rKey}
             cObject[cKey] = {name: city, id: cKey, parent: pKey}
-            hObject[hKey] = {name: city, id: hKey, parent: cKey}
+            hObject[hKey] = {name: hospital, id: hKey, parent: cKey}
         }
     })
     return JSON.stringify({rObject, pObject, cObject, hObject})
