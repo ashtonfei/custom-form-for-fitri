@@ -8,14 +8,7 @@
             <div class="md-subhead">
                 {{form.subTitle}}
             </div>
-            <template v-if="new Date() < form.start">
-                <div class="md-subhead">The registration is not availabel before {{form.start.toLocaleString()}}.</div>
-            </template>
-            <template v-else-if="new Date() > form.end">
-                <div class="md-subhead">The registration is not avaiable after {{form.end.toLocaleString()}}.</div>
-            </template>
-            <template v-else>
-                <div class="md-subhead">The registration form is only available from {{form.start.toLocaleString()}} to  {{form.end.toLocaleString()}}.</div>
+            <template>                
                 <br>
                 <template v-for="(item, i) in form.items">
                     <md-field
@@ -43,7 +36,7 @@
                           :required="item.required"
                           :disabled="form.submitting"
                           @blur="validate(item)"
-                          @change="validate(item)"
+                          @md-selected="validate(item)"
                           md-dense>
                         <md-option 
                             v-for="(option, i) in item.options"
@@ -63,7 +56,7 @@
                           :required="item.required"
                           :disabled="form.submitting"
                           @blur="validate(item)"
-                          @change="validate(item)"
+                          @md-selected="validate(item)"
                           md-dense
                           multiple>
                         <md-option 
@@ -73,6 +66,93 @@
                       </md-select>
                       <span class="md-error">{{item.error}}</span>
                     </md-field>
+
+                    <md-field
+                        v-if="item.type === 'region'"
+                        :class="item.valid === false ? 'md-invalid' : '' "
+                        :key="'item-' + i">
+                      <label>{{item.label}}</label>
+                      <md-select 
+                          v-model="item.value"
+                          :required="item.required"
+                          :disabled="form.submitting"
+                          @blur="validate(item)"
+                          @md-selected="validate(item)"
+                          md-dense>
+                        <md-option 
+                            v-for="(region) in regions"
+                            :value="region.id"
+                            :key="region.id">{{region.name}}</md-option>
+                      </md-select>
+                      <span class="md-error">{{item.error}}</span>
+                    </md-field>
+                    
+                    <md-field
+                        v-if="item.type === 'province'"
+                        :class="item.valid === false ? 'md-invalid' : '' "
+                        :key="'item-' + i">
+                      <label>{{item.label}}</label>
+                      <md-select 
+                          v-model="item.value"
+                          :required="item.required"
+                          :disabled="form.submitting"
+                          @blur="validate(item)"
+                          @md-selected="validate(item)"
+                          md-dense>
+                        <template v-for="(province) in provinces">
+                        <md-option 
+                            v-if="province.parent === form.items[0].value"
+                            :value="province.id"
+                            :key="province.id">{{province.name}}</md-option>
+                        </template>
+                      </md-select>
+                      <span class="md-error">{{item.error}}</span>
+                    </md-field>
+                    
+                    <md-field
+                        v-if="item.type === 'city'"
+                        :class="item.valid === false ? 'md-invalid' : '' "
+                        :key="'item-' + i">
+                      <label>{{item.label}}</label>
+                      <md-select 
+                          v-model="item.value"
+                          :required="item.required"
+                          :disabled="form.submitting"
+                          @blur="validate(item)"
+                          @md-selected="validate(item)"
+                          md-dense>
+                        <template v-for="(city) in cities">
+                        <md-option 
+                            v-if="city.parent === form.items[1].value"
+                            :value="city.id"
+                            :key="city.id">{{city.name}}</md-option>
+                        </template>
+                      </md-select>
+                      <span class="md-error">{{item.error}}</span>
+                    </md-field>
+                    
+                    <md-field
+                        v-if="item.type === 'hospital'"
+                        :class="item.valid === false ? 'md-invalid' : '' "
+                        :key="'item-' + i">
+                      <label>{{item.label}}</label>
+                      <md-select 
+                          v-model="item.value"
+                          :required="item.required"
+                          :disabled="form.submitting"
+                          @blur="validate(item)"
+                          @md-selected="validate(item)"
+                          md-dense>
+                        <template v-for="(hospital) in hospitals">
+                        <md-option 
+                            v-if="hospital.parent === form.items[2].value"
+                            :value="hospital.id"
+                            :key="hospital.id">{{hospital.name}}</md-option>
+                        </template>
+                      </md-select>
+                      <span class="md-error">{{item.error}}</span>
+                    </md-field>
+                    
                 </template>
                 <div>
                     <md-button 

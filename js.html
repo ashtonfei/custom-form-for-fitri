@@ -2,15 +2,15 @@
     Vue.use(VueMaterial.default)
 
     let app = {
-        name: "CSR Programme",
+        name: "Custom Form for Fitri",
         session: "form",
         hasError: false,
         error: null,
     }
 
     let form = {
-        title: "Pendaftaran Solat Aidiladha & Solat Jumaat 31 Jul 2020",
-        subTitle: "Masjid Jamek Tan Sri Ainuddin Wahid Taman Universiti Skudai Johor",
+        title: "Custom Form for Fitri",
+        subTitle: "This is a sub title",
         valid: false,
         submitting: false,
         confirmation: null,
@@ -18,70 +18,42 @@
         end: new Date(2020, 6, 31, 13), // 31 Jul 2020, 1.00 pm
         items: [
             {
-                type: "multiple-select",
-                label: "Solat (Pilih kedua-dua atau salah satu)",
+                type: "region",
+                label: "Cluster Regional",
                 value: null,
                 required: true,
                 valid: null,
                 error: "This is a required question",
-                options: ["Solat Aidiladha (Untuk Lelaki & Perempuan)","Solat Jumaat 31 Jul 2020 (Lelaki Sahaja)"],
+                options: [],
             },
             {
-                type: "input",
-                label: "Nama Penuh (seperti dalam KP)",
+                type: "province",
+                label: "Province",
                 value: null,
                 required: true,
                 valid: null,
                 error: "This is a required question",
-                options: null,
+                options: [],
             },
             {
-                type: "input",
-                label: "Alamat Rumah (tulis ringkas, contoh: 31 Kebangsaan 33, TU)",
+                type: "city",
+                label: "City",
                 value: null,
                 required: true,
                 valid: null,
                 error: "This is a required question",
-                options: null,
+                options: [],
             },
             {
-                type: "input",
-                label: "No Kad Pengenalan",
+                type: "hospital",
+                label: "Hospital",
                 value: null,
                 required: true,
                 valid: null,
                 error: "This is a required question",
-                options: null,
+                options: [],
             },
-            {
-                type: "input",
-                label: "No Telefon Bimbit",
-                value: null,
-                required: true,
-                valid: null,
-                error: "This is a required question",
-                options: null,
-            },
-            {
-                type: "select",
-                label: "Umur (Tahun)",
-                value: null,
-                required: true,
-                valid: null,
-                error: "This is a required question",
-                options: ["15 - 30", "31 - 40", "41 - 50", "51 - 60", "61 - 70", "> 71 (disahkan SIHAT)"],
-            },
-            {
-                type: "select",
-                label: "Jantina",
-                value: null,
-                required: true,
-                valid: null,
-                error: "This is a required question",
-                options: ["Lelaki", "Perempuan"],
-            }
         ],
-
     }
 
     let data = {
@@ -89,22 +61,9 @@
         form,
     }
     
-    let createConfirmationMessage = function(name, number){
-        let html = `
-            <div class="md-title">Pendaftaran Solat Aidiladha & Solat Jumaat 31 Jul 2020<\/div>
-            <p>Pendaftaran Saudara ${name} Telah Berjaya<br>
-            Nombor Pendaftaran saudara ialah ${number} . SILA INGAT NOMBOR PENDAFTARAN SAUDARA SEMASA PENDAFTARAN MASUK MASJID.<br>
-            .<br>
-            Solat Aidiladha akan diadakan pada pukul 8.30 pagi. Mohon kerjasama datang awal (7.00 - 7.45 pagi) untuk pendaftaran masuk. Pintu pagar akan ditutup tepat 8.00 pagi.<br>
-            Solat Jumaat. Pendaftaran masuk pada pukul 12 - 1.00 ptg. Mohon kerjasama untuk datang awal.<\/p>
-            
-            <p>SILA PASTIKAN<br>
-            BAWA SEJADAH, MEMAKAI FACE MASK, DAN MENGAMBIL WUDUK DARI RUMAH.<\/p>
-            
-            <p>Senarai nama akan dipaparkan di FB masjid pada hari Khamis 10 malam (Solat Aidiladha) dan  Jumaat 10 pagi (Solat Jumaat)<\/p>
-            
-            <p>TERIMA KASIH<br>
-            #KITA JAGA KITA<\/p>`
+    let createConfirmationMessage = function(number){
+        let html = `<div class="md-title">Comfirmation Message<\/div><br>
+        <div>Thanks for your submission, your registration number is <strong>${number}<\/strong>.<\/div>`
         return html
     }
 
@@ -146,6 +105,14 @@
             headers.push(item.label)
             if (typeof(item.value) === 'object'){
                 values.push(item.value.join(", "))
+            }else if(item.type === 'region'){
+                values.push(this.regions[item.value].name)
+            }else if(item.type === 'province'){
+                values.push(this.provinces[item.value].name)
+            }else if(item.type === 'city'){
+                values.push(this.cities[item.value].name)  
+            }else if(item.type === 'hospital'){
+                values.push(this.hospitals[item.value].name)
             }else{
                 values.push(item.value)
             }
@@ -153,24 +120,23 @@
         let data = {headers, values, sheetname}
         data = JSON.stringify(data)
         google.script.run
-            .withSuccessHandler(number=>{
-                if (Number(number)){
-                    this.form.submitting = false
-                    this.form.confirmation = this.createConfirmationMessage(this.form.items[1].value, number)
+            .withSuccessHandler((message)=>{
+                this.form.submitting = false
+                if (message.indexOf("Sorry") === -1){
+                    this.form.confirmation = this.createConfirmationMessage(message)
                     // reset the form
                     this.form.valid = false
                     this.form.items.forEach(item => {
                         item.value = null
                         item.valid = null
                     })
+    
                     // got to session confirmation
                     this.app.session = "confirmation"
                 }else{
-                    this.form.submitting = false
                     this.app.hasError = true
-                    this.app.error = number
+                    this.app.error = message
                 }
-                
             })
             .withFailureHandler(error=>{
                 this.form.submitting = false
@@ -185,10 +151,21 @@
         submit,
         createConfirmationMessage,
     }
-
-    new Vue({
-        el: "#app",
-        data,
-        methods,
-    })
+    
+    google.script.run
+        .withSuccessHandler(appData=>{
+            let {rObject, pObject, cObject, hObject} = JSON.parse(appData)
+            data.regions = rObject
+            data.provinces = pObject
+            data.cities = cObject
+            data.hospitals = hObject
+            console.log(data)
+            new Vue({
+                el: "#app",
+                data,
+                methods,
+            })
+        })
+        .getAppData()
+    
 </script>
