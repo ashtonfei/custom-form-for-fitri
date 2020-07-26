@@ -77,7 +77,7 @@
                           :required="item.required"
                           :disabled="form.submitting"
                           @blur="validate(item)"
-                          @md-selected="validate(item, true)"
+                          @md-selected="validate(item, true, i)"
                           md-dense>
                         <md-option 
                             v-for="(region) in regions"
@@ -97,11 +97,11 @@
                           :required="item.required"
                           :disabled="form.submitting"
                           @blur="validate(item)"
-                          @md-selected="validate(item, true)"
+                          @md-selected="validate(item, true, i)"
                           md-dense>
                         <template v-for="(province) in provinces">
                         <md-option 
-                            v-if="province.parent === form.items[0].value"
+                            v-if="province.parent === form.items[i-1].value"
                             :value="province.id"
                             :key="province.id">{{province.name}}</md-option>
                         </template>
@@ -119,11 +119,11 @@
                           :required="item.required"
                           :disabled="form.submitting"
                           @blur="validate(item)"
-                          @md-selected="validate(item, true)"
+                          @md-selected="validate(item, true, i)"
                           md-dense>
                         <template v-for="(city) in cities">
                         <md-option 
-                            v-if="city.parent === form.items[1].value"
+                            v-if="city.parent === form.items[i-1].value"
                             :value="city.id"
                             :key="city.id">{{city.name}}</md-option>
                         </template>
@@ -145,7 +145,7 @@
                           md-dense>
                         <template v-for="(hospital) in hospitals">
                         <md-option 
-                            v-if="hospital.parent === form.items[2].value"
+                            v-if="hospital.parent === form.items[i-1].value"
                             :value="hospital.id"
                             :key="hospital.id">{{hospital.name}}</md-option>
                         </template>

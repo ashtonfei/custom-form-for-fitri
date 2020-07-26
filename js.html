@@ -19,7 +19,7 @@
         items: [
             {
                 type: "region",
-                label: "Cluster Regional",
+                label: "Cluster Regional (Priority 1)",
                 value: null,
                 required: true,
                 valid: null,
@@ -28,7 +28,7 @@
             },
             {
                 type: "province",
-                label: "Province",
+                label: "Province (Priority 1)",
                 value: null,
                 required: true,
                 valid: null,
@@ -37,7 +37,7 @@
             },
             {
                 type: "city",
-                label: "City",
+                label: "City (Priority 1)",
                 value: null,
                 required: true,
                 valid: null,
@@ -46,7 +46,79 @@
             },
             {
                 type: "hospital",
-                label: "Hospital",
+                label: "Hospital (Priority 1)",
+                value: null,
+                required: true,
+                valid: null,
+                error: "This is a required question",
+                options: [],
+            },
+            {
+                type: "region",
+                label: "Cluster Regional (Priority 2)",
+                value: null,
+                required: true,
+                valid: null,
+                error: "This is a required question",
+                options: [],
+            },
+            {
+                type: "province",
+                label: "Province (Priority 2)",
+                value: null,
+                required: true,
+                valid: null,
+                error: "This is a required question",
+                options: [],
+            },
+            {
+                type: "city",
+                label: "City (Priority 2)",
+                value: null,
+                required: true,
+                valid: null,
+                error: "This is a required question",
+                options: [],
+            },
+            {
+                type: "hospital",
+                label: "Hospital (Priority 2)",
+                value: null,
+                required: true,
+                valid: null,
+                error: "This is a required question",
+                options: [],
+            },
+            {
+                type: "region",
+                label: "Cluster Regional (Priority 3)",
+                value: null,
+                required: true,
+                valid: null,
+                error: "This is a required question",
+                options: [],
+            },
+            {
+                type: "province",
+                label: "Province (Priority 3)",
+                value: null,
+                required: true,
+                valid: null,
+                error: "This is a required question",
+                options: [],
+            },
+            {
+                type: "city",
+                label: "City (Priority 3)",
+                value: null,
+                required: true,
+                valid: null,
+                error: "This is a required question",
+                options: [],
+            },
+            {
+                type: "hospital",
+                label: "Hospital (Priority 3)",
                 value: null,
                 required: true,
                 valid: null,
@@ -85,17 +157,17 @@
         return html
     }
 
-    let validate = function(item, specialCheck = false){
+    let validate = function(item, specialCheck = false, index = 0){
         if (specialCheck){
             if (item.type === "region"){
-                this.form.items[1].value = null
-                this.form.items[2].value = null
-                this.form.items[3].value = null
+                this.form.items[index + 1].value = null
+                this.form.items[index + 2].value = null
+                this.form.items[index + 3].value = null
             } else if (item.type === "province") {
-                this.form.items[2].value = null
-                this.form.items[3].value = null
+                this.form.items[index + 2].value = null
+                this.form.items[index + 3].value = null
             } else if (item.type === "city") {
-                this.form.items[3].value = null
+                this.form.items[index + 3].value = null
             }
         }
         // validate the input filed
